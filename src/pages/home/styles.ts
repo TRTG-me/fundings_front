@@ -10,11 +10,10 @@ export const useStyles = makeStyles((theme: Theme) => {
             padding: '32px',
         },
         topCardItem: {
-            backgroundColor: `${
-                theme.palette.mode === 'light'
-                    ? colors.primary.DEFAULT
-                    : colors.primary[600]
-            }`,
+            backgroundColor: `${theme.palette.mode === 'light'
+                ? colors.primary.DEFAULT
+                : colors.primary[600]
+                }`,
             padding: '16px 16px',
             minHeight: 'auto',
             border: `1px solid ${colors.borderColor}`,
@@ -39,7 +38,7 @@ export const useStyles = makeStyles((theme: Theme) => {
             fontWeight: 700,
             flexDirection: 'column',
             lineHeight: '5px',
-                       
+
         },
         priceTrend: {
             width: 80,
@@ -60,11 +59,10 @@ export const useStyles = makeStyles((theme: Theme) => {
             marginBottom: 32,
         },
         lineChartBlock: {
-            backgroundColor: `${
-                theme.palette.mode === 'light'
-                    ? colors.primary.DEFAULT
-                    : colors.primary[600]
-            }`,
+            backgroundColor: `${theme.palette.mode === 'light'
+                ? colors.primary.DEFAULT
+                : colors.primary[600]
+                }`,
             padding: '16px 16px',
             minHeight: 'auto',
             marginBottom: 32,
@@ -72,11 +70,10 @@ export const useStyles = makeStyles((theme: Theme) => {
             borderRadius: 12,
         },
         topPriceRoot: {
-            backgroundColor: `${
-                theme.palette.mode === 'light'
-                    ? colors.primary.DEFAULT
-                    : colors.primary[600]
-            }`,
+            backgroundColor: `${theme.palette.mode === 'light'
+                ? colors.primary.DEFAULT
+                : colors.primary[600]
+                }`,
             padding: '20px 16px',
             marginBottom: 32,
             minHeight: 270,
@@ -87,6 +84,12 @@ export const useStyles = makeStyles((theme: Theme) => {
                 boxShadow: 'none !important',
                 backgroundImage: 'none !important',
             },
+        },
+        buttonBlock: {
+            marginTop: 32,
+            display: 'flex',       // Добавляем flex-контейнер
+            justifyContent: 'center', // Центрируем по горизонтали
+            alignItems: 'center',    // Центрируем по вертикали (если нужно)
         },
     }
 })
