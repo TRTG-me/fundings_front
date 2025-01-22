@@ -2,7 +2,7 @@ import axios from "axios";
 
 
 export const instance = axios.create({
-    baseURL: `${process.env.REACT_APP_BACKEND_URL}`,
+    baseURL: 'http://locahost.com:5000',
     timeout: 1000,
 });
 
@@ -14,7 +14,7 @@ export const newsInstance = axios.create({
 export const coinGeckoApi = axios.create({
     baseURL: 'https://api.coingecko.com/api/v3',
     timeout: 1000,
-    headers: {'x-custom': 'foobar'}
+    headers: { 'x-custom': 'foobar' }
 });
 
 export const instanceAuth = axios.create({

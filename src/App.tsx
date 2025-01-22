@@ -12,30 +12,30 @@ import SettingsComponent from './pages/settings/settings';
 import SingleAssetPage from './pages/single-asset';
 
 function App() {
-  const [theme , colormode] = useMode()
+  const [theme, colormode] = useMode()
   return (
     <ColorModeContext.Provider value={colormode}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        
-      <div className="app">
-      <Routes>
-        <Route element = {<LayoutComponent />}>
-        <Route element={<PrivateRoute />}>
-        <Route path="/" element={<Home />} />
-        <Route path="/watchlist" element={<WatchListCOmponent />} />
-        <Route path="/news" element={<NewsComponent />} />
-        <Route path="/settings" element={<SettingsComponent />} />
-        <Route path="/single/:id" element={<SingleAssetPage />} />
-        </Route>
-        <Route path="Login" element={<AuthRootComponent />} />
-        <Route path="Register" element={<AuthRootComponent />} />
+
+        <div className="app">
+          <Routes>
+            <Route element={<LayoutComponent />}>
+              {/* <Route element={<PrivateRoute />}> */}
+              <Route path="/" element={<Home />} />
+              <Route path="/watchlist" element={<WatchListCOmponent />} />
+              <Route path="/news" element={<NewsComponent />} />
+              <Route path="/settings" element={<SettingsComponent />} />
+              <Route path="/single/:id" element={<SingleAssetPage />} />
+              {/* </Route> */}
+              {/* <Route path="Login" element={<AuthRootComponent />} />
+              <Route path="Register" element={<AuthRootComponent />} /> */}
             </Route>
-           </Routes>
-    </div>
-    
+          </Routes>
+        </div>
+
       </ThemeProvider>
-     </ColorModeContext.Provider>
+    </ColorModeContext.Provider>
   );
 }
 
