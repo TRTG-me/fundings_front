@@ -3,7 +3,8 @@ import authSlice from "./slice/auth";
 import assetsSlice from "./slice/assets";
 import watchListSlice from "./slice/watchlist";
 import newsSlice from "./slice/news";
-import fundingsSlice from "./fundings";
+import fundingsSlice from "./slice/fundings";
+
 
 
 const store = configureStore({
@@ -12,7 +13,7 @@ const store = configureStore({
         assets: assetsSlice,
         watchlist: watchListSlice,
         news: newsSlice,
-        fundings: fundingsSlice,
+        fundings: fundingsSlice
     }
 })
 

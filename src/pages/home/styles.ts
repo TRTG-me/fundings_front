@@ -88,8 +88,8 @@ export const useStyles = makeStyles((theme: Theme) => {
         buttonBlock: {
             marginTop: 32,
             display: 'flex',       // Добавляем flex-контейнер
-            justifyContent: 'center', // Центрируем по горизонтали
-            alignItems: 'center',    // Центрируем по вертикали (если нужно)
+            //justifyContent: 'center', // Центрируем по горизонтали
+            //alignItems: 'center',    // Центрируем по вертикали (если нужно)
         },
     }
 })
