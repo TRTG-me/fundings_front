@@ -3,8 +3,7 @@ import { useAppDispatch, useAppSelector } from '../../utils/hook'
 import { getNews } from '../../store/thunks/news'
 import { Box, Grid2, Link, Typography } from '@mui/material'
 import { useStyles } from './styles'
-import { fundings } from '../../store/thunks/fundings'
-import { IRefreshFundings } from '../../common/types/fundings'
+
 
 const NewsComponent: FC = (): JSX.Element => {
   const [newsItem, setNewsItem] = useState([])
@@ -55,20 +54,10 @@ const NewsComponent: FC = (): JSX.Element => {
       </Grid2>
     </Grid2>
   ))
-  const data: IRefreshFundings = {
-    days: 10,
-    coins: [
-      ["PENGUUSDT", "PENGU", "4"],
-      ["ETHUSDT", "ETH", "8"],
-      ["PENDLEUSDT", "PENDLE", "8"],
-      ["SUSDT", "S", "4"],
-      ["AIUSDT", "AI", "4"]
-    ],
-    koef: [20, 20, 20, 20, 20, 20]
-  }
+
   useEffect(() => {
     dispatch(getNews())
-    dispatch(fundings(data))
+
   }, [dispatch])
   return <Grid2 className={classes.root}>
     <Grid2 className={classes.blockTitle}>

@@ -7,19 +7,19 @@ import { Grid2, Typography } from '@mui/material'
 import { useStyles } from './styles'
 
 
-const WatchListCOmponent:FC = (): JSX.Element => {
+const WatchListCOmponent: FC = (): JSX.Element => {
   const classes = useStyles()
   const dispatch = useAppDispatch()
   const watchlist = useAppSelector(state => state.watchlist.assets)
-  const {assets} = useAppSelector(state => state.assets)
-  
+  const { assets } = useAppSelector(state => state.assets)
+
   console.log(assets)
   useEffect(() => {
     dispatch(getTopPriceData())
     dispatch(getWatchlistElements())
   }, [dispatch])
 
-  const filteredArray = assets.filter((element:any) => {
+  const filteredArray = assets.filter((element: any) => {
     return watchlist.some((otherElement: any) => {
       return otherElement.assetId === element.id
     })
@@ -34,11 +34,11 @@ const WatchListCOmponent:FC = (): JSX.Element => {
         </Typography>
       </Grid2>
       <Grid2 className={classes.assetsTableBlock}>
-      <AssetsTableComponent assets={filteredArray}/>
+        <AssetsTableComponent coins={filteredArray} />
       </Grid2>
     </Grid2>
-      
-  
+
+
   )
 }
 
