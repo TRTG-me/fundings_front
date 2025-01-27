@@ -52,3 +52,54 @@ export const fundingsStartBD = createAsyncThunk(
         }
     }
 )
+export const getFavorites = createAsyncThunk(
+    'getFavorites',
+    async (_, { rejectWithValue }) => {
+        try {
+            const fundings = await instance.get('/getFavorites')
+            return fundings.data
+
+        } catch (error: any) {
+            if (error.response && error.response.data.message) {
+                return rejectWithValue(error.response.data.message)
+            } else {
+                return rejectWithValue(error.message)
+            }
+
+        }
+    }
+)
+
+export const addFavorites = createAsyncThunk(
+    'addFavorites',
+    async (data: { coin: string }, { rejectWithValue }) => {
+        try {
+            await instance.post('/addFavor', data)
+
+        } catch (error: any) {
+            if (error.response && error.response.data.message) {
+                return rejectWithValue(error.response.data.message)
+            } else {
+                return rejectWithValue(error.message)
+            }
+
+        }
+    }
+)
+export const deleteFavorites = createAsyncThunk(
+    'deleteFavorites',
+    async (data: { coin: string }, { rejectWithValue }) => {
+        try {
+            await instance.post('/deleteFavor', data)
+
+
+        } catch (error: any) {
+            if (error.response && error.response.data.message) {
+                return rejectWithValue(error.response.data.message)
+            } else {
+                return rejectWithValue(error.message)
+            }
+
+        }
+    }
+)

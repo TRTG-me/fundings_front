@@ -5,9 +5,9 @@ import { FC } from 'react';
 
 
 
-const TopPriceComponent: FC<ITableTopCoins> = (props: ITableTopCoins): JSX.Element => {
-    const { coins } = props
-    return <AssetsTableComponent coins={coins} />
+const TopPriceComponent: FC<ITableTopCoins> = ({ coins, GoodBad }): JSX.Element => {
+
+    return <AssetsTableComponent coins={coins} GoodBad={GoodBad} />
 }
 
 export default TopPriceComponent

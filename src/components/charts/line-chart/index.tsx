@@ -8,6 +8,7 @@ import {
     Title,
     Tooltip,
     Legend,
+    Filler,
 } from 'chart.js'
 import { Line } from 'react-chartjs-2'
 import moment from 'moment'
@@ -21,15 +22,31 @@ ChartJS.register(
     Title,
     Tooltip,
     Legend,
+    Filler,
 )
 
-const LineChart:FC<ILineChartProps> = (props: ILineChartProps) => {
+const LineChart: FC<ILineChartProps> = (props: ILineChartProps) => {
     const { data } = props
-        const options = {
+
+    const options = {
         responsive: true,
-        scales:{
+        scales: {
             x: {
-                
+                type: 'category' as const,
+                display: false,
+                labels: data.daysData.map((element: any) =>
+                    moment(element).format('DD.MM.YY, h:mm')
+                ),
+                grid: {
+                    display: false
+                }
+            },
+            x1: {
+                type: 'category' as const,
+                display: false,
+                labels: data.hoursData.map((element: any) =>
+                    moment(element).format('DD.MM.YY, h:mm')
+                ),
                 grid: {
                     display: false
                 }
@@ -43,20 +60,31 @@ const LineChart:FC<ILineChartProps> = (props: ILineChartProps) => {
     }
 
     const values = {
-        labels: data[0].price_chart_data.map((element: any) =>
-            moment(element[0]).format('DD.MM.YY'),
+        labels: data.hoursData.map((element: any) =>
+            moment(element).format('DD.MM.YY, h:mm'),
         ),
         datasets: [
             {
-                label: 
-                    data[0].name.charAt(0).toUpperCase()+
-                    data[0].name.slice(1),
-                data: data[0].price_chart_data.map(
-                    (element: any) => element[1],
-                ),
-                borderColor: 'rgb(255, 99, 132)',
-                backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                label: "Days",
+                data: data.days,
+                borderColor: 'rgb(192, 41, 74)',
+                backgroundColor: 'rgba(85, 49, 57, 0.5)',
+                xAxisID: 'x',
+                pointRadius: 5,
+                order: 1
+
             },
+            {
+                label: "Hours",
+                data: data.hours,
+                borderColor: 'rgb(77, 29, 236)',
+                backgroundColor: 'rgba(81, 126, 140, 0.5)',
+                xAxisID: 'x1',
+                pointRadius: 0,
+                fill: true,
+                order: 2,
+            },
+
         ],
     }
     return <Line options={options} data={values} width="100%" height="20%" />
