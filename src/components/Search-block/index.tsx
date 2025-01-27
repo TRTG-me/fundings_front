@@ -7,29 +7,27 @@ import { useNavigate } from 'react-router-dom'
 const SearchBarComponent: FC = (): JSX.Element => {
   const [selectedItem, setSelectedItem,] = useState<string | null>('')
   const navigate = useNavigate()
-  // const assetsArray: ISingleAsset[] = useAppSelector(
-  //         (state) => state.assets.assets,
-  //     )
+  const fundingData = useAppSelector((state) => state.fundings.fundings);
 
-  return (<Grid2></Grid2>)
-  // <Stack spacing={2} sx={{width: 300}}>
-  //   <Autocomplete 
-  //   value={selectedItem}
-  //   onChange={(e: any, value: string | null) => {
-  //     navigate(`single/${value}`)
-  //     setSelectedItem(null)
-  //   }}
-  //   renderInput={(element) => (
-  //     <TextField {...element} label='Поиск' slotProps={{
-  //       input: {
-  //         ...element.InputProps,
-  //         type: 'search',
+  return (
+    <Stack spacing={2} sx={{ width: 300 }}>
+      <Autocomplete
+        value={selectedItem}
+        onChange={(e: any, value: string | null) => {
+          navigate(`single/${value}`)
+          setSelectedItem(null)
+        }}
+        renderInput={(element) => (
+          <TextField {...element} label='Поиск' slotProps={{
+            input: {
+              ...element.InputProps,
+              type: 'search',
 
-  //       }
-  //     }}/>
-  //   )} 
-  //   options={assetsArray.map((element: {name:string}) => element.name)} />
-  // </Stack>
-
+            }
+          }} />
+        )}
+        options={fundingData[0].map(element => element.coin)} />
+    </Stack>
+  )
 }
 export default SearchBarComponent

@@ -1,16 +1,20 @@
+import { IAllDataM2 } from "../fundings";
+
 export interface IAreaChartProps {
     data: number[][]
 }
 
 export interface ILineChartProps {
-    data: any
-}
+    data: {
+        hours: number[];
+        days: number[];
+        hoursData: number[]
+        daysData: number[]
+    }
+};
 
-interface Roi {
-    times: number
-    currency: string
-    percentage: number
-}
+
+
 
 export interface ISingleCoin {
     coin: string
@@ -32,4 +36,5 @@ export interface IChartData {
 
 export interface ITableTopCoins {
     coins: ISingleCoin[]
+    GoodBad: IAllDataM2[]
 }

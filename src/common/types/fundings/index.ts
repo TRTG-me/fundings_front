@@ -7,7 +7,9 @@ export interface IRefreshFundings {
 export interface IAllDataM1 {
     coin: string,
     hours: number[],
+    hoursDays: number[],
     days: number[],
+    dataDays: number[],
     last1Day: number,
     last3Days: number,
     last7Days: number,
@@ -17,15 +19,16 @@ export interface IAllDataM1 {
 }
 export interface IAllDataM2 {
     coin: string,
-    days1goodOrbad: string,
-    days3goodOrbad: string,
-    days7goodOrbad: string,
-    days14goodOrbad: string,
-    days30goodOrbad: string,
-    days60goodOrbad: string,
+    days1goodORbad: string,
+    days3goodORbad: string,
+    days7goodORbad: string,
+    days14goodORbad: string,
+    days30goodORbad: string,
+    days60goodORbad: string,
 
 }
 export interface IAllData {
     fundings: [IAllDataM1[], IAllDataM2[]],
     isLoading: boolean;
+    favorites: { coin: string }[]
 }

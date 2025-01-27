@@ -1,4 +1,4 @@
-import React, { FC } from 'react'
+import React, { FC, useState } from 'react'
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -8,53 +8,102 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { useStyles1 } from './style';
 import { ISingleCoin, ITableTopCoins } from '../../common/types/assets';
+import { Link, useNavigate } from 'react-router-dom';
+import { TableSortLabel } from '@mui/material';
+import { IAllDataM2 } from '../../common/types/fundings';
 
 
-const AssetsTableComponent: FC<ITableTopCoins> = (props: ITableTopCoins): JSX.Element => {
-  const { coins } = props
+const AssetsTableComponent: FC<ITableTopCoins> = ({ coins, GoodBad }): JSX.Element => {
+
+  const [sortColumn, setSortColumn] = useState<string | null>(null)
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc")
+  const handleSort = (column: string) => {
+    if (sortColumn === column) {
+      setSortDirection(sortDirection === "asc" ? "desc" : "asc")
+    } else {
+      setSortColumn(column)
+      setSortDirection("asc")
+    }
+  }
+  const sortedCoins = [...coins].sort((a, b) => {
+    if (!sortColumn) return 0
+    if (sortColumn === "coin") {
+      return sortDirection === "asc"
+        ? a.coin.localeCompare(b.coin)
+        : b.coin.localeCompare(a.coin)
+    } else {
+      const valueA = a[sortColumn as keyof ISingleCoin] as number
+      const valueB = b[sortColumn as keyof ISingleCoin] as number
+
+      if (valueA === -777) return 1; // Перемещаем "NO DATA" вниз
+      if (valueB === -777) return -1;
+      return sortDirection === "asc" ? valueA - valueB : valueB - valueA
+    }
+  })
+  const getGoodBadColor = (coin: string, column: string): string => {
+    const match = GoodBad.find(el => el.coin === coin)
+    if (match) {
+      const dayNumber = column.match(/\d+/)?.[0]; // Это вернет '1', '3', '7', '14', '30', '60'
+
+      if (dayNumber) {
+        const goodBadKey = `days${dayNumber}goodORbad` as keyof IAllDataM2;
+        if (match[goodBadKey] === 'GOOD') return '#A9FFA7';
+        if (match[goodBadKey] === 'BAD') return '#FFA7A7';
+      }
+    }
+    return ''; // Если данных нет для этого coin, то нет окраски
+  }
   const classes = useStyles1()
+  const navigate = useNavigate()
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
         <TableHead>
           <TableRow>
-            <TableCell>Название</TableCell>
-            <TableCell align="right">1DAY (%)</TableCell>
-            <TableCell align="right">3DAYS (%)</TableCell>
-            <TableCell align="right">7DAYS (%)</TableCell>
-            <TableCell align="right">14DAYS (%)</TableCell>
-            <TableCell align="right">30DAYS (%)</TableCell>
-            <TableCell align="right">60DAYS (%)</TableCell>
-
+            <TableCell>
+              <TableSortLabel
+                active={sortColumn === "coin"}
+                direction={sortDirection}
+                onClick={() => handleSort("coin")}
+              >
+                Название</TableSortLabel></TableCell>
+            {["last1Day", "last3Days", "last7Days", "last14Days", "last30Days", "last60Days"].map((column) => (
+              <TableCell key={column} align="right">
+                <TableSortLabel
+                  active={sortColumn === column}
+                  direction={sortDirection}
+                  onClick={() => handleSort(column)}
+                >
+                  {column.replace("last", "")} (%)
+                </TableSortLabel>
+              </TableCell>
+            ))}
           </TableRow>
         </TableHead>
         <TableBody>
-          {coins.map((element: ISingleCoin) => (
-            <TableRow
-              key={element.coin}
-              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-            >
+          {sortedCoins.map((element: ISingleCoin) => (
+            <TableRow key={element.coin}>
               <TableCell component="th" scope="row">
-                {element.coin}
+                <Link to={`/single/${element.coin}`} style={{ textDecoration: "none", color: "inherit" }}>
+                  {element.coin}
+                </Link>
               </TableCell>
-              <TableCell align="right">{element.last1Day < 0 ? "NO DATA" : element.last1Day}</TableCell>
-
-              <TableCell align="right">{element.last3Days < 0 ? "NO DATA" : element.last3Days}</TableCell>
-              <TableCell align="right">{element.last7Days < 0 ? "NO DATA" : element.last7Days}</TableCell>
-              <TableCell align="right">{element.last14Days < 0 ? "NO DATA" : element.last14Days}</TableCell>
-              <TableCell align="right">{element.last30Days < 0 ? "NO DATA" : element.last30Days}</TableCell>
-              <TableCell align="right">{element.last60Days < 0 ? "NO DATA" : element.last60Days}</TableCell>
-
+              {["last1Day", "last3Days", "last7Days", "last14Days", "last30Days", "last60Days"].map((column) => (
+                <TableCell key={column} align="right" style={{
+                  color: getGoodBadColor(element.coin, column) // Здесь применяем цвет
+                }}>
+                  {element[column as keyof ISingleCoin] === -777 ? "NO DATA" : element[column as keyof ISingleCoin]}
+                </TableCell>
+              ))}
             </TableRow>
           ))}
         </TableBody>
       </Table>
     </TableContainer>
-  )
-}
+  );
+};
 
-export default AssetsTableComponent
-
+export default AssetsTableComponent;
 // className={
 //   element.last7Days > 0
 //     ? `${classes.priceUp}`
