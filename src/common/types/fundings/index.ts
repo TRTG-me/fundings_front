@@ -27,8 +27,17 @@ export interface IAllDataM2 {
     days60goodORbad: string,
 
 }
+export interface ISettings {
+    key: string,
+    value: number,
+}
+
 export interface IAllData {
-    fundings: [IAllDataM1[], IAllDataM2[]],
+    fundings: [IAllDataM1[], IAllDataM2[]]
     isLoading: boolean;
-    favorites: { coin: string }[]
+    favorites: [IAllDataM1[], IAllDataM2[]]
+    single: [IAllDataM1[], IAllDataM2[]]
+    coins: string[]
+    settings: ISettings[]
+
 }

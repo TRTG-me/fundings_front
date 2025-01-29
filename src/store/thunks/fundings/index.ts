@@ -76,6 +76,7 @@ export const addFavorites = createAsyncThunk(
         try {
             await instance.post('/addFavor', data)
 
+
         } catch (error: any) {
             if (error.response && error.response.data.message) {
                 return rejectWithValue(error.response.data.message)
@@ -92,6 +93,58 @@ export const deleteFavorites = createAsyncThunk(
         try {
             await instance.post('/deleteFavor', data)
 
+
+        } catch (error: any) {
+            if (error.response && error.response.data.message) {
+                return rejectWithValue(error.response.data.message)
+            } else {
+                return rejectWithValue(error.message)
+            }
+
+        }
+    }
+)
+export const getSingle = createAsyncThunk(
+    'getSingle',
+    async (data: { coin: string }, { rejectWithValue }) => {
+        try {
+            const fundings = await instance.post('/singleElement', data)
+
+            return fundings.data
+
+        } catch (error: any) {
+            if (error.response && error.response.data.message) {
+                return rejectWithValue(error.response.data.message)
+            } else {
+                return rejectWithValue(error.message)
+            }
+
+        }
+    }
+)
+export const getCoins = createAsyncThunk(
+    'getCoins',
+    async (_, { rejectWithValue }) => {
+        try {
+            const fundings = await instance.get('/getCoins')
+            return fundings.data
+
+        } catch (error: any) {
+            if (error.response && error.response.data.message) {
+                return rejectWithValue(error.response.data.message)
+            } else {
+                return rejectWithValue(error.message)
+            }
+
+        }
+    }
+)
+export const getSettings = createAsyncThunk(
+    'getSettings',
+    async (_, { rejectWithValue }) => {
+        try {
+            const fundings = await instance.get('/getSettings')
+            return fundings.data
 
         } catch (error: any) {
             if (error.response && error.response.data.message) {

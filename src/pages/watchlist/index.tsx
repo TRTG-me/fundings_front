@@ -13,28 +13,6 @@ const WatchListCOmponent: FC = (): JSX.Element => {
   const classes = useStyles()
   const dispatch = useAppDispatch()
   const favorites = useAppSelector(state => state.fundings.favorites)
-  const fundings = useAppSelector(state => state.fundings.fundings)
-
-
-
-  const filteredArray: ISingleCoin[] = useMemo(() => {
-    if (!fundings.length || !favorites.length) return [];
-    return fundings[0]
-      .filter(element => favorites.some(fav => fav.coin === element.coin))
-      .map(element => ({
-        coin: element.coin,
-        last1Day: element.last1Day,
-        last3Days: element.last3Days,
-        last7Days: element.last7Days,
-        last14Days: element.last14Days,
-        last30Days: element.last30Days,
-        last60Days: element.last60Days,
-      }))
-  }, [fundings, favorites]);
-
-  const GoodBadArr = fundings[1].filter(el =>
-    filteredArray.some(element => element.coin === el.coin)
-  )
 
   useEffect(() => {
     dispatch(getFavorites())
@@ -48,7 +26,7 @@ const WatchListCOmponent: FC = (): JSX.Element => {
         </Typography>
       </Grid2>
       <Grid2 className={classes.assetsTableBlock}>
-        <AssetsTableComponent coins={filteredArray} GoodBad={GoodBadArr} />
+        <AssetsTableComponent coins={favorites[0]} GoodBad={favorites[1]} />
       </Grid2>
     </Grid2>
 

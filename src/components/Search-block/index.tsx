@@ -1,21 +1,30 @@
-import { FC, useState } from 'react'
-import { useAppSelector } from '../../utils/hook'
+import { FC, useEffect, useState } from 'react'
+import { useAppDispatch, useAppSelector } from '../../utils/hook'
 import { Stack, Autocomplete, TextField, Grid2 } from '@mui/material'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
+import { getCoins } from '../../store/thunks/fundings'
 
 
 const SearchBarComponent: FC = (): JSX.Element => {
   const [selectedItem, setSelectedItem,] = useState<string | null>('')
+  const dispatch = useAppDispatch()
   const navigate = useNavigate()
-  const fundingData = useAppSelector((state) => state.fundings.fundings);
-
+  const location = useLocation()
+  const coins = useAppSelector((state) => state.fundings.coins);
+  useEffect(() => {
+    dispatch(getCoins())
+  }, [dispatch])
+  useEffect(() => {
+    setSelectedItem(null) // Очищаем поле при смене маршрута
+  }, [location.key])
   return (
+
     <Stack spacing={2} sx={{ width: 300 }}>
       <Autocomplete
         value={selectedItem}
         onChange={(e: any, value: string | null) => {
           navigate(`single/${value}`)
-          setSelectedItem(null)
+
         }}
         renderInput={(element) => (
           <TextField {...element} label='Поиск' slotProps={{
@@ -26,7 +35,7 @@ const SearchBarComponent: FC = (): JSX.Element => {
             }
           }} />
         )}
-        options={fundingData[0].map(element => element.coin)} />
+        options={coins} />
     </Stack>
   )
 }
