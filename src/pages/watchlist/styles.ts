@@ -7,10 +7,12 @@ export const useStyles = makeStyles((theme: Theme) => {
     return {
         root: {
             padding: 32,
+
             alignItems: 'center',
         },
         watchlistHeading: {
             textAlign: 'center',
+            marginBottom: 32,
 
         },
         heading: {
