@@ -107,9 +107,9 @@ const Home: FC = (): JSX.Element => {
                 </Box>
 
             </Grid2>
-            <Box className={classes.buttonBlock}>
+            {/* <Box className={classes.buttonBlock}>
                 <AppLoadingButton type='submit' onClick={handleClick}>Удалить БД</AppLoadingButton>
-            </Box>
+            </Box> */}
             <Box className={classes.buttonBlock}>
                 <AppLoadingButton loading={loading} type='submit' onClick={handleUpdate}>Обновить </AppLoadingButton>
             </Box>

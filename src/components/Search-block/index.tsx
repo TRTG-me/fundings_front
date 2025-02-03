@@ -11,6 +11,7 @@ const SearchBarComponent: FC = (): JSX.Element => {
   const navigate = useNavigate()
   const location = useLocation()
   const coins = useAppSelector((state) => state.fundings.coins);
+  console.log(coins)
   useEffect(() => {
     dispatch(getCoins())
   }, [dispatch])
@@ -35,7 +36,7 @@ const SearchBarComponent: FC = (): JSX.Element => {
             }
           }} />
         )}
-        options={coins} />
+        options={coins.map(coins => coins[1])} />
     </Stack>
   )
 }
