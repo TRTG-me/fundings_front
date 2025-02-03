@@ -1,6 +1,6 @@
-import {makeStyles} from "@mui/styles";
-import {Theme} from "@mui/material";
-import {tokens} from "../../theme";
+import { makeStyles } from "@mui/styles";
+import { Theme } from "@mui/material";
+import { tokens } from "../../theme";
 
 export const useStyles = makeStyles((theme: Theme) => {
     const colors = tokens(theme.palette.mode)
@@ -16,7 +16,10 @@ export const useStyles = makeStyles((theme: Theme) => {
                 alignItems: 'center',
                 gap: '10px',
                 padding: '30px 15px',
-                cursor: 'pointer'
+                cursor: 'pointer',
+                width: "100px",
+                height: 100
+
             },
             brandTitle: {
                 color: `${theme.palette.mode === 'dark' ? colors.white.DEFAULT : colors.black.DEFAULT}`

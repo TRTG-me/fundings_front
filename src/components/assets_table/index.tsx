@@ -56,7 +56,7 @@ const AssetsTableComponent: FC<ITableTopCoins> = ({ coins, GoodBad }): JSX.Eleme
   const classes = useStyles1()
   const navigate = useNavigate()
   return (
-    <TableContainer component={Paper} sx={{ maxHeight: 520, overflow: "auto", display: "block" }}>
+    <TableContainer component={Paper} sx={{ maxHeight: 490, overflow: "auto", display: "block" }}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
         <TableHead>
           <TableRow>
