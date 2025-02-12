@@ -19,11 +19,11 @@ export const navMenu = [
         path: '/news',
         id: 3
     },
-    {
-        name: 'Настройки',
-        icon: <SettingsOutlined />,
-        path: '/settings',
-        id:4
-    }
+    // {
+    //     name: 'Настройки',
+    //     icon: <SettingsOutlined />,
+    //     path: '/settings',
+    //     id:4
+    // }
 
 ]

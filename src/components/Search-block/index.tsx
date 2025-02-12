@@ -11,7 +11,7 @@ const SearchBarComponent: FC = (): JSX.Element => {
   const navigate = useNavigate()
   const location = useLocation()
   const coins = useAppSelector((state) => state.fundings.coins);
-  console.log(coins)
+
   useEffect(() => {
     dispatch(getCoins())
   }, [dispatch])

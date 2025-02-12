@@ -35,7 +35,7 @@ const LineChart: FC<ILineChartProps> = (props: ILineChartProps) => {
                 type: 'category' as const,
                 display: false,
                 labels: data.daysData.map((element: any) =>
-                    moment(element).format('DD.MM.YY, h:mm')
+                    moment(element).format('DD.MM.YY, HH:mm')
                 ),
                 grid: {
                     display: false
@@ -45,7 +45,7 @@ const LineChart: FC<ILineChartProps> = (props: ILineChartProps) => {
                 type: 'category' as const,
                 display: false,
                 labels: data.hoursData.map((element: any) =>
-                    moment(element).format('DD.MM.YY, h:mm')
+                    moment(element).format('DD.MM.YY, HH:mm')
                 ),
                 grid: {
                     display: false
