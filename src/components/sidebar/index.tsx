@@ -108,12 +108,12 @@ const SidebarComponent: React.FC<IsidebarProps> = (props: IsidebarProps): JSX.El
                                 </ListItem>
                             )}
                             <ListItem>
-                                <ListItemButton className={classes.navItem} onClick={handleLogout}>
+                                <ListItemButton className={classes.navItem} disabled={true} onClick={handleLogout}>
                                     <ListItemIcon>
                                         <LogoutOutlined />
                                     </ListItemIcon>
                                     <ListItemText>
-                                        <Typography>Logout</Typography>
+                                        <Typography >Logout</Typography>
                                     </ListItemText>
                                 </ListItemButton>
                             </ListItem>

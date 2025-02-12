@@ -3,7 +3,7 @@ import axios from "axios";
 
 export const instance = axios.create({
     baseURL: 'http://localhost:5000',
-    timeout: 15000,
+    timeout: 30000,
 });
 
 export const newsInstance = axios.create({

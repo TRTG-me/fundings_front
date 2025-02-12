@@ -83,6 +83,22 @@ export const useStyles = makeStyles((theme: Theme) => {
                 backgroundImage: 'none !important',
             },
         },
+        bidask: {
+            backgroundColor: `${theme.palette.mode === 'light'
+                ? colors.primary.DEFAULT
+                : colors.primary[600]
+                }`,
+            padding: '20px 16px',
+            marginBottom: 32,
+            minHeight: 100,
+            border: `1px solid ${colors.borderColor}`,
+            borderRadius: 12,
+            '& .MuiPaper-root': {
+                backgroundColor: 'transparent !important',
+                boxShadow: 'none !important',
+                backgroundImage: 'none !important',
+            },
+        },
         lineChartBlock: {
             backgroundColor: `${theme.palette.mode === 'light'
                 ? colors.primary.DEFAULT

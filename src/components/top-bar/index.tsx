@@ -22,7 +22,7 @@ const TopBarComponent: FC<ITopBarProps> = (props: ITopBarProps): JSX.Element => 
         <FlexBetween>
           <MenuOutlined className={classes.menuIcon} onClick={() => setIsOpen(!isOpen)} />
           <Typography variant='h3'>
-            Welcome TORTUGA
+            Welcome
           </Typography></FlexBetween>
         {isNonMobile && (
           <Box display='flex'>

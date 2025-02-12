@@ -7,6 +7,7 @@ import TopPriceComponent from '../../components/top-price'
 import { addFavorites, deleteFavorites, fundingsStartBD, getFavorites, getSingle } from '../../store/thunks/fundings'
 import LineChart from '../../components/charts/line-chart'
 import WebSocketPrice from '../../components/websocket'
+import WebFrates from '../../components/web_frates'
 
 const SingleAssetPage: FC = (): JSX.Element => {
   const [open, setOpen] = useState(false)
@@ -19,8 +20,11 @@ const SingleAssetPage: FC = (): JSX.Element => {
   const fundingData = useAppSelector((state) => state.fundings.single)
   const favorites = useAppSelector((state) => state.fundings.favorites)
   const coins = useAppSelector((state) => state.fundings.coins);
-  const binArr = coins.find(el => el[1] === id)
-  const bin = binArr ? binArr[0] : "unknown"
+
+  const coinsArr = coins.length ? coins.find(el => el[1] === id) : null;
+  const bin = coinsArr ? coinsArr[0] : null;
+  const hour = coinsArr ? coinsArr[2] : null;
+
 
   const arrToLinechart = fundingData[0][0]
     ? {
@@ -45,12 +49,9 @@ const SingleAssetPage: FC = (): JSX.Element => {
   const [isFavorite, setIsFavorite] = useState(false);
 
   useEffect(() => {
+
     setIsFavorite(favorites[0].some(fav => fav.coin === id));
   }, [favorites, id]);
-
-
-
-
 
   const handleCreateRecord = (key: number) => {
     try {
@@ -86,12 +87,12 @@ const SingleAssetPage: FC = (): JSX.Element => {
   }, [dispatch, id, fundingData]);
   return (
     <Grid2 className={classes.root}>
-      <Typography variant='h2' style={{ textAlign: "center", marginBottom: 32 }}>{id}</Typography>
 
+      <WebFrates coinBin={bin ?? ""} coinHype={id ?? ""} hours={hour ?? ""} />
 
-      <Grid2 container>
-        <Grid2 size={{ xs: 12, md: 3 }} >
-          <WebSocketPrice coinBin={bin} coinHype={id ? id : "Unknown"} />
+      <Grid2 container spacing={3}>
+        <Grid2 size={{ xs: 12, md: 3 }} className={classes.bidask}>
+          {bin && id && <WebSocketPrice coinBin={bin} coinHype={id} />}
         </Grid2>
 
         <Grid2 size={{ xs: 12, md: 9 }} className={classes.lineChartBlock}>
@@ -106,6 +107,7 @@ const SingleAssetPage: FC = (): JSX.Element => {
           <TopPriceComponent coins={finalArr ? [finalArr] : []} GoodBad={fundingData[1]} />
         </Grid2>
       </Grid2>
+
 
       <Box
         sx={{

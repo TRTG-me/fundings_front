@@ -10,8 +10,7 @@ import LineChart from "../../components/charts/line-chart";
 import TopPriceComponent from "../../components/top-price";
 import AppLoadingButton from "../../components/loading-button";
 import { deleteBD, fundingsRefresh, fundingsStartBD, getSettings } from "../../store/thunks/fundings";
-import { IRefreshFundings } from "../../common/types/fundings";
-import { ISingleCoin } from "../../common/types/assets";
+import MarketOrderButton from "../../components/testapitrade";
 
 
 const Home: FC = (): JSX.Element => {
@@ -112,6 +111,7 @@ const Home: FC = (): JSX.Element => {
             </Box> */}
             <Box className={classes.buttonBlock}>
                 <AppLoadingButton loading={loading} type='submit' onClick={handleUpdate}>Обновить </AppLoadingButton>
+                <MarketOrderButton />
             </Box>
 
 
