@@ -1,6 +1,7 @@
 import * as hl from "@nktkas/hyperliquid";
 import { privateKeyToAccount } from "viem/accounts";
 import { BigNumber } from "bignumber.js";
+import { useEffect } from "react";
 
 // Helper functions
 async function getAssetData(client: hl.PublicClient, assetName: string): Promise<{
@@ -43,12 +44,29 @@ function formatSize( // https://hyperliquid.gitbook.io/hyperliquid-docs/for-deve
 
 // Initialize
 const account = privateKeyToAccount("0x40cd5bbe7c21f991bac70a1d682b7c92c4c69277a7633bbfbdcea95ae86a1d25"); // Your private key
-const transport = new hl.HttpTransport({ url: "https://api.hyperliquid-testnet.xyz" }); // Testnet
+const transport = new hl.WebSocketTransport({ url: "https://api.hyperliquid-testnet.xyz/ws" }); // Testnet
 const walletClient = new hl.WalletClient({ wallet: account, transport, isTestnet: true }); // Testnet
 const publicClient = new hl.PublicClient({ transport });
 
 // Prepare
-const MarketOrderButton: React.FC<any> = () => {
+const MarketOrderButton: React.FC<string> = (coin: string) => {
+
+    useEffect(() => {
+        // Открываем WebSocket при монтировании компонента
+        const transport = new hl.WebSocketTransport({ url: "https://api.hyperliquid-testnet.xyz/ws" });
+        const walletClient = new hl.WalletClient({ wallet: account, transport, isTestnet: true });
+
+        console.log("WebSocket открыт");
+
+        return () => {
+            // Закрываем WebSocket при размонтировании компонента
+            transport.close();
+            console.log("WebSocket закрыт");
+        };
+    }, []);
+
+
+
     const placeMarketOrder = async () => {
         try {
             //const { id, universe, ctx } = await getAssetData(publicClient, "ONDO");
@@ -63,14 +81,14 @@ const MarketOrderButton: React.FC<any> = () => {
                         a: 87,
                         b: true,
                         p: '1.4',
-                        s: '1',
+                        s: '10',
                         r: false,
                         t: { limit: { tif: "Gtc" } },
                     },
                 ],
                 grouping: "na",
             });
-
+            // transport.close()
             console.log("Маркет-ордер исполнен:", result);
         } catch (error) {
             console.error("Ошибка при размещении ордера:", error);

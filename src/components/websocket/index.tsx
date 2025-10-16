@@ -6,9 +6,14 @@ import axios from "axios";
 interface WebSocketPriceProps {
     coinBin: string; // Название пары, например "BTCUSDT"
     coinHype: string;
+    setHypeAsk?: React.Dispatch<React.SetStateAction<number | null>>;
+
 }
 
-const WebSocketPrice: React.FC<WebSocketPriceProps> = ({ coinBin, coinHype }) => {
+const WebSocketPrice: React.FC<WebSocketPriceProps> = ({
+    coinBin,
+    coinHype,
+    setHypeAsk, }) => {
     const [binancePriceBid, setBinancePriceBid] = useState<number | null>(null);
     const [binancePriceAsk, setBinancePriceAsk] = useState<number | null>(null);
 
@@ -36,18 +41,26 @@ const WebSocketPrice: React.FC<WebSocketPriceProps> = ({ coinBin, coinHype }) =>
     const fetchSnapshot = async () => {
         try {
             const response = await axios.get(`https://fapi.binance.com/fapi/v1/depth`, {
-                params: { symbol: coinBin, limit: 50 }, // Получаем 1000 уровней стакана
+                params: { symbol: coinBin, limit: 100 },
             });
-            setOrderBook({
-                bids: response.data.bids,
-                asks: response.data.asks,
-            });
-            // Устанавливаем лучшие цены bid и ask из снимка
-            if (response.data.bids.length > 0) {
-                setBinancePriceBid(coinBin === "NEIROUSDT" ? parseFloat((response.data.bids[0][0] * 1000).toFixed(5)) : parseFloat(response.data.bids[0][0]));
+            const newOrderBook = {
+                bids: response.data.bids.slice(0, 40), // Берем только топ-10
+                asks: response.data.asks.slice(0, 40),
+            };
+            setOrderBook(newOrderBook);
+
+            // Устанавливаем начальные цены
+            if (newOrderBook.bids.length > 0) {
+                const bidPrice = parseFloat(newOrderBook.bids[0][0]);
+                setBinancePriceBid(coinBin === "NEIROUSDT" ? parseFloat((bidPrice * 1000).toFixed(5)) : bidPrice);
+            } else {
+                console.warn("No bids in initial snapshot");
             }
-            if (response.data.asks.length > 0) {
-                setBinancePriceAsk(coinBin === "NEIROUSDT" ? parseFloat((response.data.asks[0][0] * 1000).toFixed(5)) : parseFloat(response.data.asks[0][0]));
+            if (newOrderBook.asks.length > 0) {
+                const askPrice = parseFloat(newOrderBook.asks[0][0]);
+                setBinancePriceAsk(coinBin === "NEIROUSDT" ? parseFloat((askPrice * 1000).toFixed(5)) : askPrice);
+            } else {
+                console.warn("No asks in initial snapshot");
             }
         } catch (error) {
             console.error("Ошибка при получении снимка стакана:", error);
@@ -56,130 +69,107 @@ const WebSocketPrice: React.FC<WebSocketPriceProps> = ({ coinBin, coinHype }) =>
 
     useEffect(() => {
         fetchSnapshot();
-
-        // Периодический опрос REST API для синхронизации стакана
-        const syncInterval = setInterval(fetchSnapshot, 60000); // Синхронизация каждую минуту
-
-        return () => {
-            clearInterval(syncInterval); // Очистка интервала при размонтировании
-        };
+        const syncInterval = setInterval(fetchSnapshot, 10000); // Синхронизация каждую минуту
+        return () => clearInterval(syncInterval);
     }, [coinBin]);
 
     // Шаг 2: Подписка на WebSocket для получения обновлений
     useEffect(() => {
+        const ws = new WebSocket(`wss://fstream.binance.com/ws/${coinBin.toLowerCase()}@depth`);
 
-        const timer = setTimeout(() => {
-            const ws = new WebSocket(`wss://fstream.binance.com/ws/${coinBin.toLowerCase()}@depth`);
+        ws.onopen = () => console.log("WebSocket Bin открыт:", coinBin);
+        ws.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            //console.log("data", data)
 
-            ws.onmessage = (event) => {
-                const data = JSON.parse(event.data);
-
-                // Шаг 3: Применение обновлений к локальному стакану
-                setOrderBook((prev) => {
-
-                    const newBids = [...prev.bids];
-                    const newAsks = [...prev.asks];
-                    const maxSize = 10; // Ограничиваем стакан 10 уровнями
-                    newBids.splice(maxSize);
-                    newAsks.splice(maxSize);
-
-                    // Обновляем bids (ордера на покупку)
-                    data.b.forEach(([price, quantity]: [string, string]) => {
-                        const index = newBids.findIndex((bid) => bid[0] === price);
-
-                        // Если количество равно 0, удаляем ордер
-                        if (parseFloat(quantity) === 0) {
-                            if (index !== -1) newBids.splice(index, 1);
-                        } else {
-                            // Если ордер уже существует, обновляем его
-                            if (index !== -1) newBids[index] = [price, quantity];
-                            // Если ордера нет, добавляем его
-                            else newBids.push([price, quantity]);
-                        }
-                    });
-
-                    // Обновляем asks (ордера на продажу)
-                    data.a.forEach(([price, quantity]: [string, string]) => {
-                        const index = newAsks.findIndex((ask) => ask[0] === price);
-
-                        // Если количество равно 0, удаляем ордер
-                        if (parseFloat(quantity) === 0) {
-                            if (index !== -1) newAsks.splice(index, 1);
-                        } else {
-                            // Если ордер уже существует, обновляем его
-                            if (index !== -1) newAsks[index] = [price, quantity];
-                            // Если ордера нет, добавляем его
-                            else newAsks.push([price, quantity]);
-                        }
-                    });
-
-                    // Сортируем bids по убыванию цены, asks по возрастанию цены
-                    newBids.sort((a, b) => parseFloat(b[0]) - parseFloat(a[0]));
-                    newAsks.sort((a, b) => parseFloat(a[0]) - parseFloat(b[0]));
-
-                    // Устанавливаем лучшие цены bid и ask
-
-                    if (newBids.length > 0) {
-                        setBinancePriceBid(coinBin === "NEIROUSDT" ? parseFloat((parseFloat(newBids[0][0]) * 1000).toFixed(5)) : parseFloat(newBids[0][0]));
+            setOrderBook((prev) => {
+                const newBids = [...prev.bids];
+                const newAsks = [...prev.asks];
+                const maxSize = 40;
+                // console.log("A", data.a, "B", data.b)
+                // Обновляем bids
+                data.b.forEach(([price, quantity]: [string, string]) => {
+                    const index = newBids.findIndex((bid) => bid[0] === price);
+                    if (parseFloat(quantity) === 0) {
+                        if (index !== -1) newBids.splice(index, 1);
+                    } else {
+                        if (index !== -1) newBids[index] = [price, quantity];
+                        else newBids.push([price, quantity]);
                     }
-                    if (newAsks.length > 0) {
-                        setBinancePriceAsk(coinBin === "NEIROUSDT" ? parseFloat((parseFloat(newAsks[0][0]) * 1000).toFixed(5)) : parseFloat(newAsks[0][0]));
-                    }
-
-                    return { bids: newBids, asks: newAsks };
                 });
-            };
-            ws.onclose = () => {
-                console.log("WebSocket closed, reconnecting...");
-                setTimeout(() => {
-                    ws.close();
-                }, 5000);
-            };
-        }, 1000); // Задержка 1 секунда
 
-        return () => {
-            clearTimeout(timer);
+                // Обновляем asks
+                data.a.forEach(([price, quantity]: [string, string]) => {
+                    const index = newAsks.findIndex((ask) => ask[0] === price);
+                    if (parseFloat(quantity) === 0) {
+                        if (index !== -1) newAsks.splice(index, 1);
+                    } else {
+                        if (index !== -1) newAsks[index] = [price, quantity];
+                        else newAsks.push([price, quantity]);
+                    }
+                });
+
+                // Сортируем и ограничиваем размер
+                const sortedBids = newBids.sort((a, b) => parseFloat(b[0]) - parseFloat(a[0])).slice(0, maxSize);
+                const sortedAsks = newAsks.sort((a, b) => parseFloat(a[0]) - parseFloat(b[0])).slice(0, maxSize);
+
+                // Обновляем цены напрямую после обработки
+                if (sortedBids.length > 0) {
+                    const bidPrice = parseFloat(sortedBids[0][0]);
+                    setBinancePriceBid(coinBin === "NEIROUSDT" ? parseFloat((bidPrice * 1000).toFixed(5)) : bidPrice);
+                }
+                if (sortedAsks.length > 0) {
+                    const askPrice = parseFloat(sortedAsks[0][0]);
+                    setBinancePriceAsk(coinBin === "NEIROUSDT" ? parseFloat((askPrice * 1000).toFixed(5)) : askPrice);
+                }
+
+                return { bids: sortedBids, asks: sortedAsks };
+            });
         };
+        ws.onclose = () => console.log("WebSocket закрыт:", coinBin);
+
+        return () => ws.close();
     }, [coinBin]);
     // HyperLiquid WebSocket
 
     useEffect(() => {
-        const timer = setTimeout(() => {
-            const ws = new WebSocket(`wss://api.hyperliquid.xyz/ws`);
+        const ws = new WebSocket(`wss://api.hyperliquid.xyz/ws`);
 
-            ws.onopen = () => {
-                const message = {
-                    method: 'subscribe',
-                    subscription: {
-                        type: 'l2Book',
-                        coin: coinHype,
-                    },
-                };
-                ws.send(JSON.stringify(message));
+
+        ws.onopen = () => {
+            console.log("WebSocket Hype открыт:", coinBin);
+            const message = {
+                method: 'subscribe',
+                subscription: {
+                    type: 'l2Book',
+                    coin: coinHype,
+                },
             };
+            ws.send(JSON.stringify(message));
+        };
 
-            ws.onmessage = (event) => {
-                const data = JSON.parse(event.data);
+        ws.onmessage = (event) => {
+            const data = JSON.parse(event.data);
 
-                if (data?.channel === 'l2Book' && data?.data) {
-                    const { levels } = data.data;
+            if (data?.channel === 'l2Book' && data?.data) {
+                const { levels } = data.data;
 
-                    if (levels) {
-                        setHypeBestBid(levels[0][0]?.px); // Лучшая цена на покупку (bid)
-                        setHypeBestAsk(levels[1][0]?.px); // Лучшая цена на продажу (ask)
+                if (levels) {
+                    setHypeBestBid(levels[0][0]?.px); // Лучшая цена на покупку (bid)
+                    if (setHypeAsk && levels[1][0]?.px !== undefined) {
+                        setHypeAsk(levels[1][0].px);
                     }
+                    setHypeBestAsk(levels[1][0]?.px); // Лучшая цена на продажу (ask)
                 }
-            };
-            ws.onclose = () => {
-                console.log("WebSocket closed, reconnecting...");
-                setTimeout(() => {
-                    ws.close();
-                }, 5000);
-            };
-        }, 1000); // Задержка 1 секунда
+            }
+        };
+        ws.onclose = () => {
+        };
+
 
         return () => {
-            clearTimeout(timer);
+            console.log("WebSocket Hype закрыт:", coinBin);
+            ws.close()
         };
     }, [coinHype]);
 

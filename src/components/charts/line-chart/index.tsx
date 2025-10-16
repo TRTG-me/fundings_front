@@ -11,6 +11,7 @@ import {
     Filler,
 } from 'chart.js'
 import { Line } from 'react-chartjs-2'
+import ZoomPlugin from 'chartjs-plugin-zoom';
 import moment from 'moment'
 import { ILineChartProps } from '../../../common/types/assets'
 
@@ -23,6 +24,7 @@ ChartJS.register(
     Tooltip,
     Legend,
     Filler,
+    ZoomPlugin,
 )
 
 const LineChart: FC<ILineChartProps> = (props: ILineChartProps) => {
@@ -56,6 +58,21 @@ const LineChart: FC<ILineChartProps> = (props: ILineChartProps) => {
             legend: {
                 position: 'top' as const
             },
+            zoom: {
+                zoom: {
+                    wheel: {
+                        enabled: true,
+                    },
+                    pinch: {
+                        enabled: true,
+                    },
+                    mode: 'xy' as const, // Указываем как константу
+                },
+                pan: {
+                    enabled: true,
+                    mode: 'xy' as const, // Указываем как константу
+                },
+            },
         },
     }
 
@@ -67,10 +84,11 @@ const LineChart: FC<ILineChartProps> = (props: ILineChartProps) => {
             {
                 label: "Days",
                 data: data.days,
-                borderColor: 'rgb(192, 41, 74)',
+                borderColor: 'rgb(189, 54, 83)',
                 backgroundColor: 'rgba(85, 49, 57, 0.5)',
+                pointBorderColor: 'rgb(255, 0, 8)',
                 xAxisID: 'x',
-                pointRadius: 5,
+                pointRadius: 6,
                 order: 1
 
             },
@@ -80,7 +98,9 @@ const LineChart: FC<ILineChartProps> = (props: ILineChartProps) => {
                 borderColor: 'rgb(77, 29, 236)',
                 backgroundColor: 'rgba(81, 126, 140, 0.5)',
                 xAxisID: 'x1',
-                pointRadius: 0,
+                pointRadius: 2,
+                pointBorderColor: 'rgb(0, 255, 221)',
+                //pointBackgroundColor: 'rgb(0, 255, 0)', 
                 fill: true,
                 order: 2,
             },

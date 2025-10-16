@@ -8,6 +8,7 @@ import { addFavorites, deleteFavorites, fundingsStartBD, getFavorites, getSingle
 import LineChart from '../../components/charts/line-chart'
 import WebSocketPrice from '../../components/websocket'
 import WebFrates from '../../components/web_frates'
+import TradeBot from '../../components/tradeBotHl'
 
 const SingleAssetPage: FC = (): JSX.Element => {
   const [open, setOpen] = useState(false)
@@ -126,6 +127,14 @@ const SingleAssetPage: FC = (): JSX.Element => {
         >
           Назад
         </Button>
+        <Button
+          color="success"
+          variant="outlined"
+          onClick={() => navigate(`/trade/${id}`)}
+
+        >
+          Трейд
+        </Button>
 
         <Box
           sx={{
@@ -156,7 +165,6 @@ const SingleAssetPage: FC = (): JSX.Element => {
         </Box>
 
       </Box>
-
     </Grid2>
   )
 

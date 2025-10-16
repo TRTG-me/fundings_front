@@ -13,6 +13,7 @@ import { deleteBD, fundingsRefresh, fundingsStartBD, getSettings } from "../../s
 import MarketOrderButton from "../../components/testapitrade";
 
 
+
 const Home: FC = (): JSX.Element => {
     const dispatch = useAppDispatch()
     const classes = useStyles()
@@ -111,7 +112,8 @@ const Home: FC = (): JSX.Element => {
             </Box> */}
             <Box className={classes.buttonBlock}>
                 <AppLoadingButton loading={loading} type='submit' onClick={handleUpdate}>Обновить </AppLoadingButton>
-                <MarketOrderButton />
+                {/* <MarketOrderButton /> */}
+
             </Box>
 
 
